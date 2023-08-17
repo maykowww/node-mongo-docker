@@ -1,11 +1,22 @@
-import * as express from "express"
-import { Request, Response } from "express"
-import Person from "@/person"
+import * as express from "express";
+import mongoose from "mongoose";
+import { Request, Response } from "express";
 
-const app = express()
+mongoose
+  .connect(`${process.env.DATABASE_URL!}/${process.env.DB_NAME}`)
+  .then(() => {
+    console.log("mongodb connected !");
+  })
+  .catch((err) => {
+    console.log("error while connect: ", (err as Error).message);
+  });
 
-app.get("/", (req: Request, res: Response) => {
-  res.send(new Person().sayHello())
-})
+const app = express();
 
-app.listen(3000, () => console.log("listening on port 3000!"))
+app.get("/", (_req: Request, res: Response) => {
+  return res.json({
+    message: "server working !",
+  });
+});
+
+app.listen(3000, () => console.log("listening on port 3000!"));

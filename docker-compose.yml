@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  base_environment:
+    image: alpine:latest
+    environment:
+      - PORT=3000
+      - DATABASE_URL=mongodb://mongo:27017
+      - DB_NAME=mysterious
+  mongo:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongodb-data:/data/db
+    ports:
+      - 27017:2701
+  app:
+    extends:
+      service: base_environment
+    build:
+      context: .
+    depends_on:
+      - mongo
+    command:
+      - sh
+      - -c
+      - |
+        yarn start
+    ports:
+      - 3000:3000
+volumes:
+  mongodb-data: {}
